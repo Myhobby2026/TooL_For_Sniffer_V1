@@ -366,7 +366,7 @@ headers for `DecodedEvent`, creating a cycle.
 | Formatting | `{fmt}` vendored, wrapped as `usn::format` | Becomes `std::format` where available. Needed for logging without pulling in Qt. |
 | JSON | `nlohmann/json`, includes isolated to `.cpp` files | Config + `.usn` extensible metadata. MIT, header-only. |
 | Ownership | `std::unique_ptr` default; `std::shared_ptr` **only** for immutable snapshots crossing thread boundaries; `std::span` for borrowed views; move-only blocks in queues | Master spec §8. The one `shared_ptr` justification: GUI snapshots consumed by the render thread. |
-| Naming | `PascalCase` types, `camelCase` functions/vars, `k`-prefixed constants, `m_`-free (no member prefix), `I`-prefixed pure interfaces | Consistent with Qt interop at the `app` layer. |
+| Naming | `PascalCase` types, `camelCase` functions/variables, `k`-prefixed constants, **`m_`-prefixed members**, `I`-prefixed pure interfaces | The `m_` prefix is deliberate, not decorative: with `-Wshadow -Werror` it makes member/parameter collisions visible at a glance, and it matches Qt's own convention, which matters because `app`/`gui` must interoperate with Qt types. |
 | Warnings | MSVC `/W4 /WX /permissive- /Zc:__cplusplus /utf-8`; GCC/Clang `-Wall -Wextra -Wpedantic -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wuseless-cast -Werror`; third-party `/external:W0` / `-isystem` | Master spec §49 requires warning review. |
 
 ### 4.2 `common` — status and error model (master spec §43)

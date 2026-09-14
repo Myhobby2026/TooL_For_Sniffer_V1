@@ -1,0 +1,21 @@
+{
+  "block": {
+    "channelCount": 8,
+    "channelMask": 255,
+    "firstDeviceTick": 4096000,
+    "firstSampleIndex": 4096,
+    "payloadPattern": "counter16",
+    "reserved": 0,
+    "sampleCount": 16,
+    "sampleRateHz": 1000000,
+    "strideBytes": 2
+  },
+  "case": "wire_sample_block",
+  "description": "One SAMPLE_BLOCK packet: 8 channels, 2-byte stride, 16 samples, counter payload, sequence 7, streamId 43981.",
+  "flags": 16,
+  "headerLength": 32,
+  "headerVersion": 1,
+  "packetType": 7,
+  "sequence": 7,
+  "streamId": 43981
+}

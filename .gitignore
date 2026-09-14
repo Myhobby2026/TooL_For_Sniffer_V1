@@ -1,0 +1,68 @@
+# Build directories
+build/
+build-*/
+cmake-build-*/
+out/
+install/
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+CMakeUserPresets.json
+cmake_install.cmake
+CTestTestfile.cmake
+Testing/
+compile_commands.json
+_deps/
+
+# Compiled objects / libs
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dylib
+*.dll
+*.exe
+*.pdb
+*.ilk
+*.exp
+
+# Qt / QML generated
+*.qm
+moc_*.cpp
+qrc_*.cpp
+ui_*.h
+.qmlcache/
+*.qmltypes.in
+
+# Firmware build artifacts
+firmware/**/build/
+*.hex
+*.elf
+*.eep
+*.lst
+*.map
+*.sym
+
+# Editors / OS
+.vscode/*
+!.vscode/settings.json.example
+!.vscode/extensions.json
+!.vscode/tasks.json.example
+.idea/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# Test / coverage output
+coverage/
+*.gcda
+*.gcno
+*.profraw
+gtest-*.xml
+
+# Local caches & secrets
+.cache/
+*.local

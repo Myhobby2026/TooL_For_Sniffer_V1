@@ -1,0 +1,253 @@
+{
+  "$comment": [
+    "CMakePresets.json -- one entry point per supported toolchain.",
+    "",
+    "Schema version 3 is used deliberately: it is the newest version CMake 3.21",
+    "(the project's declared floor) understands, so a contributor on the minimum",
+    "supported CMake can still list and use every preset here.",
+    "",
+    "The primary target is MSVC on Windows (master spec section 3). The GCC/Clang",
+    "presets exist because the sanitizer and architecture-test suites must run",
+    "somewhere, and because a core that only compiles on one compiler is not",
+    "portable in any meaningful sense.",
+    "",
+    "USN_ENABLE_GUI is ON only where Qt 6.8 is expected to be present. Headless",
+    "presets turn it off explicitly rather than relying on auto-detection, so a",
+    "missing Qt produces a clean 'GUI disabled' summary instead of a configure",
+    "failure in the middle of a CI job."
+  ],
+  "version": 3,
+  "cmakeMinimumRequired": { "major": 3, "minor": 21, "patch": 0 },
+
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "USN_CXX_STANDARD": "20",
+        "USN_WARNINGS_AS_ERRORS": "ON",
+        "USN_BUILD_TESTS": "ON",
+        "USN_BUILD_TOOLS": "ON"
+      }
+    },
+
+    {
+      "name": "msvc-base",
+      "hidden": true,
+      "inherits": "base",
+      "generator": "Ninja",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      },
+      "architecture": { "value": "x64", "strategy": "set" },
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "cl.exe",
+        "CMAKE_CXX_COMPILER": "cl.exe",
+        "USN_ENABLE_GUI": "ON"
+      }
+    },
+    {
+      "name": "windows-msvc-debug",
+      "displayName": "Windows / MSVC / Debug",
+      "description": "Primary development preset. Requires a VS developer environment so cl.exe is on PATH.",
+      "inherits": "msvc-base",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
+    },
+    {
+      "name": "windows-msvc-release",
+      "displayName": "Windows / MSVC / Release",
+      "inherits": "msvc-base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "USN_WARNINGS_AS_ERRORS": "OFF"
+      }
+    },
+    {
+      "name": "windows-msvc-relwithdebinfo",
+      "displayName": "Windows / MSVC / RelWithDebInfo",
+      "description": "The configuration used for throughput measurement: optimised, but with symbols so a profiler can attribute cost.",
+      "inherits": "msvc-base",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "RelWithDebInfo" }
+    },
+
+    {
+      "name": "gcc-base",
+      "hidden": true,
+      "inherits": "base",
+      "condition": {
+        "type": "notEquals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      },
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "gcc",
+        "CMAKE_CXX_COMPILER": "g++",
+        "USN_ENABLE_GUI": "OFF"
+      }
+    },
+    {
+      "name": "linux-gcc-debug",
+      "displayName": "Linux / GCC / Debug (headless)",
+      "inherits": "gcc-base",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
+    },
+    {
+      "name": "linux-gcc-release",
+      "displayName": "Linux / GCC / Release (headless)",
+      "inherits": "gcc-base",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
+    },
+    {
+      "name": "linux-gcc-asan",
+      "displayName": "Linux / GCC / Debug + ASan+UBSan",
+      "description": "Runs the whole suite under AddressSanitizer and UndefinedBehaviorSanitizer.",
+      "inherits": "gcc-base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "USN_ENABLE_SANITIZERS": "ON"
+      }
+    },
+    {
+      "name": "linux-gcc-tsan",
+      "displayName": "Linux / GCC / Debug + TSan",
+      "description": "Nightly preset. ThreadSanitizer is incompatible with ASan, so it gets its own build tree; capture_pipeline and capture_session are the code it exists for.",
+      "inherits": "gcc-base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "USN_ENABLE_TSAN": "ON"
+      }
+    },
+    {
+      "name": "linux-gcc-bench",
+      "displayName": "Linux / GCC / Release + benchmarks",
+      "inherits": "gcc-base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "USN_BUILD_BENCHMARKS": "ON",
+        "USN_BUILD_TESTS": "OFF"
+      }
+    },
+
+    {
+      "name": "clang-base",
+      "hidden": true,
+      "inherits": "base",
+      "condition": {
+        "type": "notEquals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      },
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "clang",
+        "CMAKE_CXX_COMPILER": "clang++",
+        "USN_ENABLE_GUI": "OFF"
+      }
+    },
+    {
+      "name": "linux-clang-debug",
+      "displayName": "Linux / Clang / Debug (headless)",
+      "description": "Second compiler over the same sources. A warning set that only one compiler enforces is not a warning set.",
+      "inherits": "clang-base",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
+    },
+    {
+      "name": "macos-clang-debug",
+      "displayName": "macOS / AppleClang / Debug (headless)",
+      "inherits": "clang-base",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
+      },
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "clang",
+        "CMAKE_CXX_COMPILER": "clang++",
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+
+    {
+      "name": "ci-headless",
+      "displayName": "CI / GCC / Debug (headless, no network deps)",
+      "description": "What the phase gate is checked with when no display server or Qt is available.",
+      "inherits": "gcc-base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "USN_BUILD_TESTS": "ON",
+        "USN_BUILD_TOOLS": "ON",
+        "USN_BUILD_BENCHMARKS": "OFF",
+        "USN_ENABLE_GUI": "OFF"
+      }
+    }
+  ],
+
+  "buildPresets": [
+    { "name": "windows-msvc-debug", "configurePreset": "windows-msvc-debug" },
+    { "name": "windows-msvc-release", "configurePreset": "windows-msvc-release" },
+    { "name": "windows-msvc-relwithdebinfo", "configurePreset": "windows-msvc-relwithdebinfo" },
+    { "name": "linux-gcc-debug", "configurePreset": "linux-gcc-debug" },
+    { "name": "linux-gcc-release", "configurePreset": "linux-gcc-release" },
+    { "name": "linux-gcc-asan", "configurePreset": "linux-gcc-asan" },
+    { "name": "linux-gcc-tsan", "configurePreset": "linux-gcc-tsan" },
+    { "name": "linux-gcc-bench", "configurePreset": "linux-gcc-bench" },
+    { "name": "linux-clang-debug", "configurePreset": "linux-clang-debug" },
+    { "name": "macos-clang-debug", "configurePreset": "macos-clang-debug" },
+    { "name": "ci-headless", "configurePreset": "ci-headless" }
+  ],
+
+  "testPresets": [
+    {
+      "name": "test-base",
+      "hidden": true,
+      "output": { "outputOnFailure": true },
+      "execution": { "noTestsAction": "error", "stopOnFailure": false }
+    },
+    {
+      "name": "unit",
+      "displayName": "Unit + architecture tests",
+      "inherits": "test-base",
+      "configurePreset": "ci-headless",
+      "filter": { "label": "unit" }
+    },
+    {
+      "name": "integration",
+      "displayName": "Integration tests",
+      "inherits": "test-base",
+      "configurePreset": "ci-headless",
+      "filter": { "label": "integration" }
+    },
+    {
+      "name": "fuzz",
+      "displayName": "Codec fuzz corpus",
+      "description": "Long-running; the nightly job raises the iteration count via USN_FUZZ_ITERATIONS.",
+      "inherits": "test-base",
+      "configurePreset": "ci-headless",
+      "filter": { "label": "fuzz" },
+      "execution": { "noTestsAction": "error", "stopOnFailure": true, "jobs": 1 }
+    },
+    {
+      "name": "golden",
+      "displayName": "Golden-file tests",
+      "inherits": "test-base",
+      "configurePreset": "ci-headless",
+      "filter": { "label": "golden" }
+    },
+    {
+      "name": "all",
+      "displayName": "Everything",
+      "inherits": "test-base",
+      "configurePreset": "ci-headless"
+    },
+    {
+      "name": "windows-msvc-debug-all",
+      "displayName": "Everything (MSVC Debug)",
+      "inherits": "test-base",
+      "configurePreset": "windows-msvc-debug"
+    }
+  ]
+}
