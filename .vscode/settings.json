@@ -1,0 +1,15 @@
+{
+  "cmake.useCMakePresets": "always",
+  "cmake.configureOnOpen": true,
+  "cmake.sourceDirectory": "${workspaceFolder}",
+  "C_Cpp.default.cppStandard": "c++20",
+  "C_Cpp.default.cStandard": "c11",
+  "C_Cpp.default.compileCommands": "${workspaceFolder}/build/${command:cmake.buildPresetName}/compile_commands.json",
+  "editor.formatOnSave": true,
+  "files.associations": {
+    "*.h": "cpp",
+    "*.c": "c",
+    "*.cpp": "cpp",
+    "*.qml": "qml"
+  }
+}

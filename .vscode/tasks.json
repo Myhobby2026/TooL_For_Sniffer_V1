@@ -1,0 +1,53 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "CMake: Configure (Active Preset)",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "--preset",
+        "${command:cmake.activeConfigurePresetName}"
+      ],
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "CMake: Build (Active Preset)",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "--build",
+        "--preset",
+        "${command:cmake.activeBuildPresetName}"
+      ],
+      "problemMatcher": "$gcc",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "CTest: Run All Tests",
+      "type": "shell",
+      "command": "ctest",
+      "args": [
+        "--test-dir",
+        "${workspaceFolder}/build/${command:cmake.activeBuildPresetName}",
+        "--output-on-failure"
+      ],
+      "problemMatcher": [],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "Tools: Run Diagnostics CLI",
+      "type": "shell",
+      "command": "${workspaceFolder}/build/${command:cmake.activeBuildPresetName}/bin/diagnostics",
+      "args": ["-p"],
+      "problemMatcher": []
+    }
+  ]
+}

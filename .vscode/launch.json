@@ -1,0 +1,48 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug: Diagnostics CLI",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/${command:cmake.activeBuildPresetName}/bin/diagnostics",
+      "args": ["-p", "-v"],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    },
+    {
+      "name": "Debug: Wire Dumper CLI",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/${command:cmake.activeBuildPresetName}/bin/wire_dumper",
+      "args": ["--help"],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "gdb"
+    },
+    {
+      "name": "Debug: Unit Tests (Capture Pipeline)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/${command:cmake.activeBuildPresetName}/bin/unit_capture_pipeline",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "gdb"
+    }
+  ]
+}

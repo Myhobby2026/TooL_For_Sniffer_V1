@@ -48,9 +48,10 @@ firmware/**/build/
 
 # Editors / OS
 .vscode/*
-!.vscode/settings.json.example
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
 !.vscode/extensions.json
-!.vscode/tasks.json.example
 .idea/
 *.swp
 *~
