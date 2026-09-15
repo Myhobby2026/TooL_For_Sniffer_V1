@@ -1,21 +1,4 @@
 {
-  "$comment": [
-    "CMakePresets.json -- one entry point per supported toolchain.",
-    "",
-    "Schema version 3 is used deliberately: it is the newest version CMake 3.21",
-    "(the project's declared floor) understands, so a contributor on the minimum",
-    "supported CMake can still list and use every preset here.",
-    "",
-    "The primary target is MSVC on Windows (master spec section 3). The GCC/Clang",
-    "presets exist because the sanitizer and architecture-test suites must run",
-    "somewhere, and because a core that only compiles on one compiler is not",
-    "portable in any meaningful sense.",
-    "",
-    "USN_ENABLE_GUI is ON only where Qt 6.8 is expected to be present. Headless",
-    "presets turn it off explicitly rather than relying on auto-detection, so a",
-    "missing Qt produces a clean 'GUI disabled' summary instead of a configure",
-    "failure in the middle of a CI job."
-  ],
   "version": 3,
   "cmakeMinimumRequired": { "major": 3, "minor": 21, "patch": 0 },
 
@@ -183,6 +166,46 @@
         "USN_BUILD_BENCHMARKS": "OFF",
         "USN_ENABLE_GUI": "OFF"
       }
+    },
+    {
+      "name": "core-only",
+      "displayName": "Core only (headless, no Qt)",
+      "description": "Builds the entire core and test suite without Qt or GUI.",
+      "inherits": "gcc-base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "USN_ENABLE_GUI": "OFF"
+      }
+    },
+    {
+      "name": "windows-debug",
+      "displayName": "Windows / Debug",
+      "inherits": "windows-msvc-debug"
+    },
+    {
+      "name": "windows-release",
+      "displayName": "Windows / Release",
+      "inherits": "windows-msvc-release"
+    },
+    {
+      "name": "linux-debug",
+      "displayName": "Linux / Debug",
+      "inherits": "linux-gcc-debug"
+    },
+    {
+      "name": "linux-release",
+      "displayName": "Linux / Release",
+      "inherits": "linux-gcc-release"
+    },
+    {
+      "name": "asan",
+      "displayName": "AddressSanitizer + UBSan",
+      "inherits": "linux-gcc-asan"
+    },
+    {
+      "name": "tsan",
+      "displayName": "ThreadSanitizer",
+      "inherits": "linux-gcc-tsan"
     }
   ],
 
@@ -197,7 +220,14 @@
     { "name": "linux-gcc-bench", "configurePreset": "linux-gcc-bench" },
     { "name": "linux-clang-debug", "configurePreset": "linux-clang-debug" },
     { "name": "macos-clang-debug", "configurePreset": "macos-clang-debug" },
-    { "name": "ci-headless", "configurePreset": "ci-headless" }
+    { "name": "ci-headless", "configurePreset": "ci-headless" },
+    { "name": "core-only", "configurePreset": "core-only" },
+    { "name": "windows-debug", "configurePreset": "windows-debug" },
+    { "name": "windows-release", "configurePreset": "windows-release" },
+    { "name": "linux-debug", "configurePreset": "linux-debug" },
+    { "name": "linux-release", "configurePreset": "linux-release" },
+    { "name": "asan", "configurePreset": "asan" },
+    { "name": "tsan", "configurePreset": "tsan" }
   ],
 
   "testPresets": [

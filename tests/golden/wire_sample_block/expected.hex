@@ -1,0 +1,11 @@
+# Golden wire packet, generated from the field layout and CRC32C
+# polynomial in shared/wire/usn_wire.h by an independent Python
+# implementation (tests/golden/regenerate.py). One byte per hex
+# pair; '#' starts a comment.
+55 53 4e 31 01 07 10 20 07 00 00 00 48 00 00 00
+cd ab 00 00 00 00 00 00 f8 2a 63 2c b8 7a b1 f3
+00 10 00 00 00 00 00 00 00 80 3e 00 00 00 00 00
+10 00 00 00 08 00 02 00 ff 00 00 00 00 00 00 00
+40 42 0f 00 00 00 00 00 00 00 01 00 02 00 03 00
+04 00 05 00 06 00 07 00 08 00 09 00 0a 00 0b 00
+0c 00 0d 00 0e 00 0f 00

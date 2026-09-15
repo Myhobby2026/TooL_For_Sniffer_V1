@@ -1,0 +1,29 @@
+name: Firmware CI (Teensy 4.1)
+
+on:
+  push:
+    branches: ["main", "arena/**"]
+  pull_request:
+    branches: ["main"]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  wire-integrity-check:
+    name: Shared Wire Format Compilation
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install ARM Toolchain
+        run: sudo apt-get update && sudo apt-get install -y gcc-arm-none-eabi
+
+      - name: Validate C-compatibility of wire headers with arm-none-eabi-gcc
+        run: |
+          arm-none-eabi-gcc -c -std=c11 -Wall -Wextra -Werror -I shared/wire shared/wire/usn_wire_crc.c -o /tmp/wire_crc.o
+          arm-none-eabi-gcc -c -std=c11 -Wall -Wextra -Werror -I shared/wire shared/wire/usn_wire_rle.c -o /tmp/wire_rle.o
+          echo "Shared wire protocol and codecs compile cleanly with bare-metal arm-none-eabi-gcc"

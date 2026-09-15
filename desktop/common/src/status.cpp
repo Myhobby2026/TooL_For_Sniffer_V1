@@ -21,6 +21,7 @@ struct CodeInfo {
 
 // Ordered exactly as the enumerator, so index == static_cast<size_t>(code).
 constexpr CodeInfo kCodes[] = {
+    {ErrorCode::Ok, "Ok", ErrorSeverity::Info},
     {ErrorCode::DeviceNotFound, "DeviceNotFound", ErrorSeverity::Error},
     {ErrorCode::DeviceBusy, "DeviceBusy", ErrorSeverity::Error},
     {ErrorCode::DeviceUnsupported, "DeviceUnsupported", ErrorSeverity::Error},

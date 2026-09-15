@@ -1,0 +1,58 @@
+name: GUI CI (Qt 6)
+
+on:
+  push:
+    branches: ["main", "arena/**"]
+  pull_request:
+    branches: ["main"]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gui-build:
+    name: ${{ matrix.os }} - Qt ${{ matrix.qt-version }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            qt-version: "6.8.0"
+          - os: windows-2022
+            qt-version: "6.8.0"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install CMake and Ninja
+        run: python -m pip install cmake ninja
+
+      - name: Set up MSVC environment
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Install Qt 6
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: ${{ matrix.qt-version }}
+          modules: "qtquickcontrols2"
+
+      - name: Configure CMake with GUI enabled
+        run: |
+          cmake -B build-gui -GNinja -DUSN_ENABLE_GUI=ON -DUSN_BUILD_TESTS=ON -DUSN_BUILD_TOOLS=ON
+
+      - name: Build Desktop Application
+        run: cmake --build build-gui
+
+      - name: Run Headless / Offscreen Smoke Test
+        if: runner.os == 'Linux'
+        run: |
+          ctest --test-dir build-gui --output-on-failure

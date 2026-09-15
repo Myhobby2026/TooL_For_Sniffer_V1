@@ -16,3 +16,13 @@ if(TARGET usn_wire_dumper)
         USN_WIRE_DUMPER_PATH="$<TARGET_FILE:usn_wire_dumper>")
     add_dependencies(integration_wire_dumper usn_wire_dumper)
 endif()
+
+if(TARGET usn_diagnostics)
+    usn_add_test(integration_diagnostics
+        SOURCES diagnostics_test.cpp
+        LIBS usn::core usn_test_support nlohmann_json::nlohmann_json
+        LABELS "integration;tools")
+    target_compile_definitions(integration_diagnostics PRIVATE
+        USN_DIAGNOSTICS_PATH="$<TARGET_FILE:usn_diagnostics>")
+    add_dependencies(integration_diagnostics usn_diagnostics)
+endif()

@@ -6,3 +6,4 @@
 # useful as a cross-check on the codec tests.
 # ----------------------------------------------------------------------------
 add_subdirectory(wire_dumper)
+add_subdirectory(diagnostics)
